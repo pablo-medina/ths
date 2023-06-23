@@ -5,7 +5,7 @@ Simple Go HTTP Server for Hosting Angular Applications
 This Go program allows you to start a simple HTTP server to host Angular web applications. It provides support for Cross-Origin Resource Sharing (CORS) and allows you to configure the hosting folder and port from the command line.
 
 ### Usage
-server [options]
+ths [options]
 
 ### Options
   --dir    Hosting directory. (Default: current directory)
