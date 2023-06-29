@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"path/filepath"
 
 	"github.com/rs/cors"
 )
@@ -32,27 +31,15 @@ func main() {
 	// Handler to serve Angular static files
 	staticHandler := http.FileServer(http.Dir(*dir))
 
-	// Handler for catchinf all request and servince index.html
-	indexHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, filepath.Join(*dir, "index.html"))
-	})
-
-	// Combine static and index handlers
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		staticHandler.ServeHTTP(w, r)
-		indexHandler.ServeHTTP(w, r)
-	})
-
 	// CORS configuration
-	var corsHandler http.Handler = handler
+	var handler http.Handler = staticHandler
 	corsStatus := "DISABLED"
 	if *corsEnabled {
-		corsHandler = cors.Default().Handler(handler)
+		handler = cors.Default().Handler(staticHandler)
 		corsStatus = "ENABLED"
 	}
 
-	// Root path
-	http.Handle("/", corsHandler)
+	http.Handle("/", handler)
 
 	// Start the server on the specified port
 	if *https {
